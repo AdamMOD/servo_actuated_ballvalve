@@ -7,7 +7,9 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 Adafruit_ADS1115 ads;   
 
 float time_zero_seconds;
-
+// vout - purple
+// gnd - white
+// v+ - brown
 enum valve{regulator_1=1};
 #define USMIN  900 // This is the rounded 'minimum' microsecond length
 #define USMAX  2100 // This is the rounded 'maximum' microsecond length
@@ -20,6 +22,7 @@ enum valve{regulator_1=1};
 
 void commandServo(float open_fraction, int valve)
 {
+  // Zero open, One closed
   switch(valve)
   {
     float command_microseconds;
@@ -110,7 +113,8 @@ void loop() {
   //command_us = 1350 + 450 * sin(time_seconds);
   //square command
   //command_us = 1333 + 400 * sgn(sin(time_seconds));
-  command = .5; + .5 * sin(time_seconds);
+//  command = .5; + .5 * sin(time_seconds);
+    command = 1.0;
   //adc = ads.readADC_SingleEnded(1);
   //pwm.writeMicroseconds(1, command_us);
   commandServo(command, regulator_1);
