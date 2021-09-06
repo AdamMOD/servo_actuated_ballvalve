@@ -67,7 +67,7 @@ template <typename T> int sgn(T val) {
 
 void setup() {
   Serial.begin(9600);
-  Serial.print("Time,Command,Reading,Reading\n");
+  Serial.print("Time,Command,Volts,Psi\n");
   
   // The ADC input range (or gain) can be changed via the following
   // functions, but be careful never to exceed VDD +0.3V max, or to
@@ -87,6 +87,8 @@ void setup() {
     while (1);
   }
   ads.setGain(GAIN_TWOTHIRDS);
+  ads.setDataRate(0x0040);
+  
   //ads.setDataRate(RATE_ADS1115_860SPS);
 
   
@@ -114,21 +116,34 @@ void loop() {
   //square command
   //command_us = 1333 + 400 * sgn(sin(time_seconds));
 //  command = .5; + .5 * sin(time_seconds);
+   if(time_seconds <= 10.0){
+    Serial.print("Open, ");
+    //command = 0.75;
+    command = .5 + .5 * sin(.5 * pow(time_seconds,2));
+     commandServo(command, regulator_1);
+    //pwm.writeMicroseconds(1, command_us);
+    
+    Serial.print(time_seconds, 4); Serial.print("s, ");
+    //Serial.print(command_us); Serial.print(","); 
+    //Serial.print(adc); Serial.print("\n");
+    Serial.print(command, 4); Serial.print("cmd, ");
+    Serial.print(volts, 4); Serial.print("V, ");
+    Serial.print(psi, 4); Serial.println("psi, ");
+    delay(10);
+   }
+   else{
     command = 1.0;
+    commandServo(command, regulator_1);
+    Serial.print("Closed, ");
+    Serial.print(time_seconds, 4); Serial.print("s,");
+    //Serial.print(command_us); Serial.print(","); 
+    //Serial.print(adc); Serial.print("\n");
+    Serial.print(command, 4); Serial.print("cmd,");
+    Serial.print(volts, 4); Serial.print("V,");
+    Serial.print(psi, 4); Serial.println("psi,");
+    delay(10);
+   }
   //adc = ads.readADC_SingleEnded(1);
   //pwm.writeMicroseconds(1, command_us);
-  commandServo(command, regulator_1);
-  //pwm.writeMicroseconds(1, command_us);
-  
-  Serial.print(time_seconds, 4); Serial.print("s, ");
-  //Serial.print(command_us); Serial.print(","); 
-  //Serial.print(adc); Serial.print("\n");
-  Serial.print(command, 4); Serial.print("cmd, ");
-  Serial.print(volts, 4); Serial.print("V, ");
-  Serial.print(psi, 4); Serial.println("psi, ");
-  
-  
-  delay(10);
-  
 
 }
